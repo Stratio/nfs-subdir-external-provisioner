@@ -32,4 +32,4 @@ helm package "${ARTIFACTS_BUILD_DIR}/${CHART_NAME}" \
     --dependency-update \
     --destination="${ARTIFACTS_BUILD_DIR}"
 
-rm -rf ${ARTIFACTS_BUILD_DIR}/${CHART_NAME}
+rm -rf "${ARTIFACTS_BUILD_DIR}/${CHART_NAME}"
