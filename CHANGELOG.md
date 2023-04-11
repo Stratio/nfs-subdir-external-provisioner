@@ -1,3 +1,11 @@
+# Changelog
+
+## 4.0.18 (upcoming)
+
+* [EOS-10976] Adapt repository for new chart build method
+
+#################################################################################################################################################################################
+
 # v4.0.2
 - Add arm7 (32bit) support (https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/pull/58)
 
