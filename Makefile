@@ -13,8 +13,18 @@
 # limitations under the License.
 
 CMDS=nfs-subdir-external-provisioner
-all: build
+all:
+
+build:
 
 include release-tools/build.make
 
- BUILD_PLATFORMS=linux amd64 amd64; linux arm arm -arm; linux arm64 arm64 -arm64; linux ppc64le ppc64le -ppc64le; linux s390x s390x -s390x
+ #BUILD_PLATFORMS=linux amd64 amd64; linux arm arm -arm; linux arm64 arm64 -arm64; linux ppc64le ppc64le -ppc64le; linux s390x s390x -s390x
+ BUILD_PLATFORMS=linux amd64 amd64
+
+.PHONY: helm-release
+helm-release:
+	bin/helm-release.sh $(version) $(ARTIFACTS_BUILD_DIR)
+
+change-version:
+	bin/change-version.sh $(version)
