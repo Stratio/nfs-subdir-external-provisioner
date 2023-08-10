@@ -1,6 +1,7 @@
 # Changelog
 
-## 4.0.18 (upcoming)
+## 4.0.18 (2023-08-10)
+
 
 * [EOS-10976] Adapt repository for new chart build method
 
@@ -57,3 +58,7 @@
 
 # v1
 - Initial release
+
+## Previous development
+
+### 
