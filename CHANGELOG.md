@@ -1,10 +1,15 @@
 # Changelog
 
-## 4.1.0 (upcoming)
+## 5.0.0 (upcoming)
 
 * Pending changelog 
 
-#################################################################################################################################################################################
+## 4.0.18 (2023-08-10)
+
+* [EOS-10976] Add `extraContainers`, `extraEnvVars`, `extraVolumes` & `extraVolumeMounts`
+* [EOS-10976] Adapt to stratio CICD flow
+
+## Previous development
 
 # v4.0.2
 - Add arm7 (32bit) support (https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/pull/58)
