@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/distroless/static:latest
+FROM distroless/static:latest
 LABEL maintainers="Kubernetes Authors"
 LABEL description="NFS subdir external provisioner"
 ARG binary=./bin/nfs-subdir-external-provisioner
