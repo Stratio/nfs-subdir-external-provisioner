@@ -2,7 +2,7 @@
 hose {
     EMAIL = 'eos@stratio.com'
     BUILDTOOL = 'make'
-    BUILDTOOL_IMAGE = 'golang:1.20'
+    BUILDTOOL_IMAGE = 'golang:1.19'
     DEVTIMEOUT = 60
     RELEASETIMEOUT = 60
     VERSIONING_TYPE = 'stratioVersion-3-3'
