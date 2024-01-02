@@ -123,6 +123,7 @@ $(CMDS:%=push-%): push-%: container-%
 	done
 
 build: $(CMDS:%=build-%)
+package: $(CMDS:%=build-%)
 container: $(CMDS:%=container-%)
 push: $(CMDS:%=push-%)
 
