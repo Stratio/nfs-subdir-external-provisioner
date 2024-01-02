@@ -2,7 +2,7 @@
 
 ## 5.0.0 (upcoming)
 
-* Pending changelog 
+* [EOS-12275] Adapt release version to double versioning with upstream version
 
 ## 4.0.18 (2023-08-10)
 
