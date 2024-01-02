@@ -9,7 +9,7 @@ hose {
     UPSTREAM_VERSION = '4.0.18'
     DEPLOYONPRS = true
     DEV = { config ->
-            doPackage(conf:config)
+            doPackage(conf:config, parameters: "HOME=/tmp")
             doDocker(conf:config)
             doHelmChart(conf:config, helmTarget:"helm-release")
     }
