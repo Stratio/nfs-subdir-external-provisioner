@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.0.0 (upcoming)
+## 4.0.18-5.0.0 (upcoming)
 
 * [EOS-12275] Adapt release version to double versioning with upstream version
 
