@@ -1,10 +1,10 @@
 # Changelog
 
-## 5.1.0 (upcoming)
+## 4.0.19-5.1.0 (upcoming)
 
 * [EOS-12275] Bump upstream version from 4.0.18 to 4.0.19 
 
-## 5.0.0 (2024-01-03)
+## 4.0.18-5.0.0 (2024-01-03)
 
 * [EOS-12275] Adapt release version to double versioning with upstream version
 
