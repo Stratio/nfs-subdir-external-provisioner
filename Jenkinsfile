@@ -6,7 +6,7 @@ hose {
     DEVTIMEOUT = 60
     RELEASETIMEOUT = 60
     VERSIONING_TYPE = 'stratioVersion-3-3'
-    UPSTREAM_VERSION = '4.0.18'
+    UPSTREAM_VERSION = '4.0.19'
     DEPLOYONPRS = true
     DEV = { config ->
             doPackage(conf:config, parameters: "HOME=/tmp")
