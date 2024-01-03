@@ -8,6 +8,7 @@ hose {
     VERSIONING_TYPE = 'stratioVersion-3-3'
     UPSTREAM_VERSION = '4.0.19'
     DEPLOYONPRS = true
+    GRYPE_TEST = true
     DEV = { config ->
             doPackage(conf:config, parameters: "HOME=/tmp")
             doDocker(conf:config)
