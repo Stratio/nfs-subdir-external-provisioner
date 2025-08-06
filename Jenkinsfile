@@ -1,8 +1,8 @@
 @Library('libpipelines') _
 hose {
-    EMAIL = 'eos@stratio.com'
+    EMAIL = 'platform@stratio.com'
     BUILDTOOL = 'make'
-    BUILDTOOL_IMAGE = 'golang:1.19'
+    BUILDTOOL_IMAGE = 'golang:1.24'
     DEVTIMEOUT = 60
     RELEASETIMEOUT = 60
     VERSIONING_TYPE = 'stratioVersion-3-3'
@@ -14,4 +14,6 @@ hose {
             doDocker(conf:config)
             doHelmChart(conf:config, helmTarget:"helm-release")
     }
+    BUILDTOOL_MEMORY_REQUEST = "1024Mi"
+    BUILDTOOL_MEMORY_LIMIT = "10Gi"
 }
