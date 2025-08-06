@@ -17,5 +17,6 @@ LABEL maintainers="Kubernetes Authors"
 LABEL description="NFS subdir external provisioner"
 ARG binary=./bin/nfs-subdir-external-provisioner
 
+USER root
 COPY ${binary} /nfs-subdir-external-provisioner
 ENTRYPOINT ["/nfs-subdir-external-provisioner"]
