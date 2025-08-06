@@ -2,7 +2,7 @@
 
 ## 4.0.19-5.2.0 (upcoming)
 
-* Upcoming changelog
+* [PLT-2673] Bump dependencies to fix vulnerabilities
 
 ## 4.0.19-5.1.0 (2024-01-03)
 
