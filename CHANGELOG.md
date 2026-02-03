@@ -1,8 +1,11 @@
 # Changelog
 
-## 4.0.19-5.2.0 (upcoming)
+## 5.2.0 (upcoming)
 
 * [PLT-2673] Bump dependencies to fix vulnerabilities
+* [PLT-3777] Feature: Adaptate to Semantic Versioning
+
+* nfs-subdir-extenal-provisioner upstream version: 4.0.19
 
 ## 4.0.19-5.1.0 (2024-01-03)
 
