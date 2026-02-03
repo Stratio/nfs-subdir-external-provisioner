@@ -9,6 +9,7 @@ hose {
     UPSTREAM_VERSION = '4.0.19'
     DEPLOYONPRS = true
     GRYPE_TEST = true
+    VERSIONING_TYPE = "semver"
     DEV = { config ->
             doPackage(conf:config, parameters: "HOME=/tmp")
             doDocker(conf:config)
