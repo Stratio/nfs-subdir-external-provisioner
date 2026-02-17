@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.2.0 (upcoming)
+## 5.2.0 (2026-02-17)
 
 * [PLT-2673] Bump dependencies to fix vulnerabilities
 * [PLT-3777] Feature: Adaptate to Semantic Versioning
