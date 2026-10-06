@@ -2,7 +2,7 @@
 
 ## 5.3.0 (upcoming)
 
-* Pending changelog
+* [PLT-4925] Bump Go to 1.26.6, golang.org/x/* and gopkg.in/yaml.v3 to fix vulnerabilities and remove unneeded replace directives
 
 ## Previous development
 
