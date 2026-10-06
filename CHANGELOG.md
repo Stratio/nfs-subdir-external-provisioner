@@ -2,7 +2,7 @@
 
 ## 5.3.0 (upcoming)
 
-* Pending changelog
+* [PLT-4925] Validate pathPattern to prevent path traversal and symlink attacks from PVC labels and annotations
 
 ## Previous development
 
