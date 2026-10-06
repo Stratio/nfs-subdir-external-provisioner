@@ -3,7 +3,7 @@
 ## 5.3.0 (upcoming)
 
 * [PLT-4925] Bump Go to 1.26.6, golang.org/x/* and gopkg.in/yaml.v3 to fix vulnerabilities and remove unneeded replace directives
-* [PLT-4925] Bump sig-storage-lib-external-provisioner to v13.1.0 and k8s.io/* to v0.37.0; leader election now uses Leases (RBAC updated)
+* [PLT-4925] Bump sig-storage-lib-external-provisioner to v13.1.0 and k8s.io/* to v0.37.0; leader election now uses Leases (RBAC updated) and the chart requires Kubernetes >= 1.31
 
 ## Previous development
 
