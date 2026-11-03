@@ -57,25 +57,91 @@ type pvcMetadata struct {
 
 var pattern = regexp.MustCompile(`\${\.PVC\.((labels|annotations)\.(.*?)|.*?)}`)
 
-func (meta *pvcMetadata) stringParser(str string) string {
+func (meta *pvcMetadata) stringParser(str string) (string, error) {
 	result := pattern.FindAllStringSubmatch(str, -1)
 	for _, r := range result {
+		var value string
 		switch r[2] {
 		case "labels":
-			str = strings.ReplaceAll(str, r[0], meta.labels[r[3]])
+			value = meta.labels[r[3]]
 		case "annotations":
-			str = strings.ReplaceAll(str, r[0], meta.annotations[r[3]])
+			value = meta.annotations[r[3]]
 		default:
-			str = strings.ReplaceAll(str, r[0], meta.data[r[1]])
+			value = meta.data[r[1]]
 		}
+		if err := validatePathValue(r[0], value); err != nil {
+			return "", err
+		}
+		str = strings.ReplaceAll(str, r[0], value)
 	}
 
-	return str
+	return str, nil
 }
 
-const (
-	mountPath = "/persistentvolumes"
-)
+// validatePathValue checks a value substituted into pathPattern. Labels and
+// annotations are set by whoever creates the PVC, so each value must map to
+// exactly one directory name: the directory layout is decided by the
+// pathPattern of the StorageClass, never by the PVC.
+func validatePathValue(placeholder, value string) error {
+	switch {
+	case value == "":
+		return fmt.Errorf("pathPattern placeholder %s resolves to an empty value", placeholder)
+	case value == "." || value == "..":
+		return fmt.Errorf("pathPattern placeholder %s resolves to %q, which is not allowed", placeholder, value)
+	case strings.ContainsAny(value, "/\\\x00"):
+		return fmt.Errorf("pathPattern placeholder %s resolves to %q, which contains a path separator or NUL character", placeholder, value)
+	}
+	return nil
+}
+
+// resolveCustomPath expands pathPattern and returns it as a clean path
+// relative to the NFS base path. It fails if the result would point to the
+// base path itself or outside of it.
+func resolveCustomPath(pathPattern string, meta *pvcMetadata) (string, error) {
+	customPath, err := meta.stringParser(pathPattern)
+	if err != nil {
+		return "", err
+	}
+	for _, segment := range strings.Split(customPath, "/") {
+		if segment == ".." {
+			return "", fmt.Errorf("path %q resolved from pathPattern must not contain \"..\"", customPath)
+		}
+	}
+	relPath := strings.TrimPrefix(filepath.Clean("/"+customPath), "/")
+	if relPath == "" {
+		return "", fmt.Errorf("path %q resolved from pathPattern points to the NFS base path", customPath)
+	}
+	return relPath, nil
+}
+
+// checkNoSymlinks makes sure that no existing component of relPath below
+// base is a symlink. Users can write to the directories they are given, so a
+// symlink planted there could redirect a new volume, and the chmod that
+// follows, to a directory that belongs to somebody else.
+func checkNoSymlinks(base, relPath string) error {
+	current := base
+	for _, segment := range strings.Split(relPath, "/") {
+		current = filepath.Join(current, segment)
+		info, err := os.Lstat(current)
+		if os.IsNotExist(err) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		if info.Mode()&os.ModeSymlink != 0 {
+			return fmt.Errorf("path %s is a symlink", current)
+		}
+		if !info.IsDir() {
+			return fmt.Errorf("path %s is not a directory", current)
+		}
+	}
+	return nil
+}
+
+// mountPath is where the NFS base path is mounted inside the container. It is
+// a variable so that tests can point it to a temporary directory.
+var mountPath = "/persistentvolumes"
 
 var _ controller.Provisioner = &nfsProvisioner{}
 
@@ -99,25 +165,33 @@ func (p *nfsProvisioner) Provision(ctx context.Context, options controller.Provi
 		annotations: options.PVC.Annotations,
 	}
 
-	fullPath := filepath.Join(mountPath, pvName)
-	path := filepath.Join(p.path, pvName)
-
+	relPath := pvName
 	pathPattern, exists := options.StorageClass.Parameters["pathPattern"]
-	if exists {
-		customPath := metadata.stringParser(pathPattern)
-		if customPath != "" {
-			path = filepath.Join(p.path, customPath)
-			fullPath = filepath.Join(mountPath, customPath)
+	if exists && pathPattern != "" {
+		var err error
+		relPath, err = resolveCustomPath(pathPattern, metadata)
+		if err != nil {
+			return nil, controller.ProvisioningFinished, fmt.Errorf("invalid pathPattern for PVC %s/%s: %w", pvcNamespace, pvcName, err)
 		}
 	}
+	path := filepath.Join(p.path, relPath)
+	fullPath := filepath.Join(mountPath, relPath)
 
+	if err := checkNoSymlinks(mountPath, relPath); err != nil {
+		return nil, controller.ProvisioningFinished, fmt.Errorf("unable to provision new pv: %w", err)
+	}
 	glog.V(4).Infof("creating path %s", fullPath)
 	if err := os.MkdirAll(fullPath, 0o777); err != nil {
 		return nil, controller.ProvisioningFinished, errors.New("unable to create directory to provision new pv: " + err.Error())
 	}
-	err := os.Chmod(fullPath, 0o777)
-	if err != nil {
-		return nil, "", err
+	// Check again to narrow the window between the first check and MkdirAll.
+	if err := checkNoSymlinks(mountPath, relPath); err != nil {
+		return nil, controller.ProvisioningFinished, fmt.Errorf("unable to provision new pv: %w", err)
+	}
+	// The directory must be writable by any UID because the pods that mount it
+	// do not share the provisioner's UID. Only the leaf directory is changed.
+	if err := os.Chmod(fullPath, 0o777); err != nil {
+		return nil, controller.ProvisioningFinished, fmt.Errorf("unable to set permissions on %s: %w", fullPath, err)
 	}
 
 	pv := &v1.PersistentVolume{
@@ -151,6 +225,9 @@ func (p *nfsProvisioner) Delete(ctx context.Context, volume *v1.PersistentVolume
 	if _, err := os.Stat(oldPath); os.IsNotExist(err) {
 		glog.Warningf("path %s does not exist, deletion skipped", oldPath)
 		return nil
+	}
+	if rel, err := filepath.Rel(mountPath, filepath.Clean(oldPath)); err != nil || rel == "." || rel == ".." || strings.HasPrefix(rel, "../") {
+		return fmt.Errorf("path %s of volume %s is outside of %s, refusing to delete it", path, volume.Name, p.path)
 	}
 	// Get the storage class for this volume.
 	storageClass, err := p.getClassForVolume(ctx, volume)
