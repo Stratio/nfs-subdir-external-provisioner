@@ -1,1 +1,2 @@
 release-tools/** linguist-vendored
+vendor/** linguist-generated=true

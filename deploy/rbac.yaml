@@ -15,7 +15,7 @@ rules:
     verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["persistentvolumes"]
-    verbs: ["get", "list", "watch", "create", "delete"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch"]
   - apiGroups: [""]
     resources: ["persistentvolumeclaims"]
     verbs: ["get", "list", "watch", "update"]
@@ -47,8 +47,8 @@ metadata:
   # replace with namespace where provisioner is deployed
   namespace: default
 rules:
-  - apiGroups: [""]
-    resources: ["endpoints"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
 ---
 kind: RoleBinding

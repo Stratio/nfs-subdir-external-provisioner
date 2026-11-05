@@ -63,7 +63,7 @@ The following tables lists the configurable parameters of this chart and their d
 | `storageClass.provisionerName`       | Name of the provisionerName                                                                           | null                                                          |
 | `storageClass.archiveOnDelete`       | Archive PVC when deleting                                                                             | `true`                                                        |
 | `storageClass.onDelete`              | Strategy on PVC deletion. Overrides archiveOnDelete when set to lowercase values 'delete' or 'retain' | null                                                          |
-| `storageClass.pathPattern`           | Specifies a template for the directory name                                                           | null                                                          |
+| `storageClass.pathPattern`           | Template for the directory path; label and annotation values must be single directory names          | null                                                          |
 | `storageClass.accessModes`           | Set access mode for PV                                                                                | `ReadWriteOnce`                                               |
 | `storageClass.volumeBindingMode`     | Set volume binding mode for Storage Class                                                             | `Immediate`                                                   |
 | `storageClass.annotations`           | Set additional annotations for the StorageClass                                                       | `{}`                                                          |

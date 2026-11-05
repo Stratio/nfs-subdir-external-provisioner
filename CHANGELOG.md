@@ -2,7 +2,11 @@
 
 ## 5.3.0 (upcoming)
 
-* Pending changelog
+* [PLT-4925] Bump Go to 1.26.10, golang.org/x/* (x/net 0.62.0) and gopkg.in/yaml.v3 to fix vulnerabilities and remove unneeded replace directives
+* [PLT-4925] Bump sig-storage-lib-external-provisioner to v13.1.0 and k8s.io/* to v0.37.0; leader election now uses Leases (RBAC updated) and the chart requires Kubernetes >= 1.31
+* [PLT-4925] Validate pathPattern to prevent path traversal and symlink attacks from PVC labels and annotations. Breaking: every label or annotation value must be a single, non-empty path segment (no `/`, `\`, `.` or `..`); PVCs that do not comply stay Pending
+* [PLT-4925] Add the `keosMinVersion: 1.5.0` chart annotation so that older KEOS releases do not pick this chart
+* [PLT-4925] Pin the distroless base image by digest and remove unused upstream Dockerfiles and GitHub workflows
 
 ## Previous development
 
